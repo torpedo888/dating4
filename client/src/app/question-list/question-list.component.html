@@ -1,0 +1,13 @@
+<p>question-list works!</p>
+
+
+<h2>Questions List</h2>
+<ul>
+    <li *ngFor="let item of questions">
+      <h3>{{ item.question.text }}</h3>
+      <ul>
+        <li *ngFor="let option of item.options">{{ option.text }}</li>
+      </ul>
+      
+    </li>
+  </ul>
