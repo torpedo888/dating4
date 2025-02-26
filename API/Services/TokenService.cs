@@ -19,7 +19,7 @@ namespace API.Services
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
         }
 
-        public string CreateToken(User user)
+        public string CreateToken(AppUser user)
         {
             if (_key.Key.Length < 64) throw new Exception("Your tokenkey needs to be longer");
 
