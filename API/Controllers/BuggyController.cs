@@ -7,13 +7,9 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BuggyController : ControllerBase
+    public class BuggyController(DataContext context) : ControllerBase
     {
-        private readonly DataContext _context;
-        public BuggyController(DataContext context)
-        {
-            _context = context;
-        }
+        private readonly DataContext _context = context;
 
         [HttpGet]
         public async Task<IActionResult> GetQuestions()

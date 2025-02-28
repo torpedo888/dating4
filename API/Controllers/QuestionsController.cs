@@ -5,14 +5,9 @@ using API.Entitites;
 
 [Route("api/[controller]")]
 [ApiController]
-public class QuestionsController : ControllerBase
+public class QuestionsController(DataContext context) : ControllerBase
 {
-    private readonly DataContext _context;
-
-    public QuestionsController(DataContext context)
-    {
-        _context = context;
-    }
+    private readonly DataContext _context = context;
 
     [HttpPost("create-quiz")]
     public async Task<IActionResult> PostQuiz([FromBody] Quiz quiz)
@@ -139,7 +134,7 @@ public class QuestionCreateRequest
 {
     public string Text { get; set; }
     public int CorrectOptionId { get; set; }
-    public List<OptionCreateRequest> Options { get; set; } = new List<OptionCreateRequest>();
+    public List<OptionCreateRequest> Options { get; set; } = [];
     public int QuizId { get; set; }
     public int CategoryId { get; set; }
 }

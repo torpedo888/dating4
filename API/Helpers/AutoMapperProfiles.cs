@@ -11,9 +11,11 @@ namespace API.Helpers
         {
             CreateMap<AppUser, MemberDto>()
                 .ForMember(d => d.Age, o => o.MapFrom(s => s.DateOfBirth.CalculateAge()))
-                .ForMember(d => d.PhotoUrl, 
+                .ForMember(d => d.PhotoUrl,
                     o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain)!.Url)); // because automapper couldn't figure photourl out by itself
             CreateMap<Photo, PhotoDto>();
+
+            CreateMap<RegisterDto, AppUser>();
         }
     }
 }

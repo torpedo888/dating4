@@ -7,27 +7,42 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Entitites;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 namespace API.Services
 {
-    public class TokenService : ITokenService
+    public class TokenService(IConfiguration config, UserManager<AppUser> userManager) : ITokenService
     {
-        private readonly SymmetricSecurityKey _key;
+        //private readonly SymmetricSecurityKey _key;
 
-        public TokenService(IConfiguration config)
-        {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-        }
+        // public TokenService(IConfiguration config, UserManager<AppUser> userManager)
+        // {
+        //     var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot access tokenKey from appsettings.");
+        //     if (tokenKey.Length < 64) throw new Exception("Your tokenkey needs to be longer");
 
-        public string CreateToken(AppUser user)
+        //     _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
+        // }
+
+        public async Task<string> CreateToken(AppUser user)
         {
-            if (_key.Key.Length < 64) throw new Exception("Your tokenkey needs to be longer");
+            var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot access tokenKey from appsettings.");
+            if (tokenKey.Length < 64) throw new Exception("Your tokenkey needs to be longer");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
+
+            if (user.UserName == null) throw new Exception("No username for user");
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString())
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.UserName)
             };
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+
+            var roles = await userManager.GetRolesAsync(user);
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),

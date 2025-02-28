@@ -13,7 +13,6 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class UsersController(IUserRepository userRepository, IMapper mapper) : ControllerBase
 {
-    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
@@ -22,7 +21,6 @@ public class UsersController(IUserRepository userRepository, IMapper mapper) : C
         return Ok(users);
     }
 
-    //[Authorize]
     [HttpGet("{username}")]
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
