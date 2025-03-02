@@ -6,6 +6,8 @@ import { QuestionListComponent } from './question-list/question-list.component';
 import { NavComponent } from './nav/nav.component';
 import { AccountService } from './_services/account.service';
 import { HomeComponent } from './home/home.component';
+import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,8 @@ import { HomeComponent } from './home/home.component';
     QuestionListComponent,
     NavComponent,
     HomeComponent,
+    UserManagementComponent,
+    PhotoManagementComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

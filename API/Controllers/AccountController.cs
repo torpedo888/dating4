@@ -53,7 +53,7 @@ namespace API.Controllers
         {
             var user = await userManager.Users
                 .Include(p => p.Photos)
-                    .FirstOrDefaultAsync(x => x.NormalizedUserName.Equals(loginDto.UserName, StringComparison.CurrentCultureIgnoreCase));
+                .FirstOrDefaultAsync(x => x.NormalizedUserName.ToUpper() == loginDto.UserName.ToUpper());
 
             if (user == null || user.UserName == null) return Unauthorized("invalid username");
 

@@ -10,6 +10,8 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { QuestionListComponent } from './question-list/question-list.component';
 import { QuestionFormComponent } from './question-form/question-form.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { adminGuard } from './_guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -24,6 +26,7 @@ export const routes: Routes = [
       { path: 'messages', component: MessagesComponent },
       { path: 'quiz', component: QuestionListComponent },
       { path: 'addquestion', component: QuestionFormComponent },
+      { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard]}
     ],
   },
   { path: 'errors', component: TestErrorsComponent },
