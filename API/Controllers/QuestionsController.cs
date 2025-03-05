@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using API.Entitites;
+using API.DTOs;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -81,15 +82,6 @@ public class QuestionsController(DataContext context) : ControllerBase
         return Ok(question);
     }
 
-
-    // Example of another POST method, e.g., for batch creation or another action
-    // [HttpPost("bulk-create")] // Differentiate this with a unique route
-    // public IActionResult PostMultipleQuestions([FromBody] List<Question> questions)
-    // {
-    //     // Implementation for adding multiple questions
-    //     // Similar validation and save logic
-    // }
-
     // GET method for retrieving a question
     [HttpGet("{id}")] // Example of a GET method
     public IActionResult GetQuestion(int id)
@@ -107,27 +99,71 @@ public class QuestionsController(DataContext context) : ControllerBase
     {
         try
         {
-            // Get all questions
-            var questions = await _context.Questions.ToListAsync();
+            var questions = await _context.Questions
+                .Include(q => q.Options)
+                .ToListAsync();
 
-            // Get all options related to those questions
-            var options = await _context.Options.ToListAsync();
-
-            // Group options by QuestionId
-            var questionsWithOptions = questions.Select(q => new
+            // Convert to DTOs
+            var questionDtos = questions.Select(q => new QuestionDto
             {
-                Question = q,
-                Options = options.Where(o => o.QuestionId == q.Id).ToList() // Get options for the current question
+                Id = q.Id,
+                Text = q.Text,
+                Options = q.Options.Select(o => new OptionDto
+                {
+                    Id = o.Id,
+                    Text = o.Text
+                }).ToList()
             }).ToList();
 
-            return Ok(questionsWithOptions);
+            return Ok(questionDtos);
         }
         catch (Exception ex)
         {
-            // Handle exception, log it if necessary
             return StatusCode(500, ex.Message);
         }
     }
+
+    public class SubmitQuizDto
+    {
+        public List<UserAnswerDto> Answers { get; set; }
+    }
+
+    public class UserAnswerDto
+    {
+        public int QuestionId { get; set; }
+        public int SelectedOptionId { get; set; }
+    }
+
+    [HttpPost("submit")]
+    public async Task<IActionResult> SubmitQuiz([FromBody] SubmitQuizDto submission)
+    {
+        if (submission == null || submission.Answers == null || submission.Answers.Count == 0)
+        {
+            return BadRequest("Invalid submission.");
+        }
+
+        int correctCount = 0;
+        int totalQuestions = submission.Answers.Count;
+
+        foreach (var answer in submission.Answers)
+        {
+            var question = await _context.Questions.FindAsync(answer.QuestionId);
+            if (question != null && question.CorrectOptionId == answer.SelectedOptionId)
+            {
+                correctCount++;
+            }
+        }
+
+        var result = new
+        {
+            TotalQuestions = totalQuestions,
+            CorrectAnswers = correctCount,
+            Score = (double)correctCount / totalQuestions * 100
+        };
+
+        return Ok(result);
+    }
+
 }
 
 public class QuestionCreateRequest

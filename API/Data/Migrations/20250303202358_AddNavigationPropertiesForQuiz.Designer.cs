@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250303202358_AddNavigationPropertiesForQuiz")]
+    partial class AddNavigationPropertiesForQuiz
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
@@ -166,8 +169,7 @@ namespace API.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "name");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -180,17 +182,12 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Relational:JsonPropertyName", "isCorrect");
-
                     b.Property<int>("QuestionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "text");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -242,8 +239,7 @@ namespace API.Data.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "text");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -260,17 +256,11 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "title");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Quizzes");
                 });
@@ -417,17 +407,6 @@ namespace API.Data.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("API.Entitites.Quiz", b =>
-                {
-                    b.HasOne("API.Entitites.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

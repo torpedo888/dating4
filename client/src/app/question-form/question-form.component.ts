@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { QuestionService, Question } from '../question.service'; // Adjust the path as necessary
+import { QuestionService } from '../question.service'; // Adjust the path as necessary
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -33,26 +33,26 @@ export class QuestionFormComponent {
 
   onSubmit() {
     // Constructing the data object
-    const formData: Question = {
-      id: 0, // Set to 0 or leave undefined if you're creating a new question
-      text: this.questionText,
-      correctOptionId: this.correctOptionIndex !== null ? this.options[this.correctOptionIndex].id : 0, // Set correctOptionId based on the selected option
-      quizId: this.quizId,
-      categoryId: this.categoryId
-    };
+    // const formData: Question = {
+    //   id: 0, // Set to 0 or leave undefined if you're creating a new question
+    //   text: this.questionText,
+    //   correctOptionId: this.correctOptionIndex !== null ? this.options[this.correctOptionIndex].id : 0, // Set correctOptionId based on the selected option
+    //   quizId: this.quizId,
+    //   categoryId: this.categoryId
+    // };
 
-    console.log('Form Data:', JSON.stringify(formData, null, 2));
+   // console.log('Form Data:', JSON.stringify(formData, null, 2));
 
-    // Using the QuestionService to save the question
-    this.questionService.saveQuestion(formData).subscribe(
-      response => {
-        // Handle success
-        console.log('Question saved!', response);
-      },
-      error => {
-        // Handle error
-        console.error('Error saving question', error);
-      }
-    );
+    // // Using the QuestionService to save the question
+    // this.questionService.saveQuestion(formData).subscribe(
+    //   response => {
+    //     // Handle success
+    //     console.log('Question saved!', response);
+    //   },
+    //   error => {
+    //     // Handle error
+    //     console.error('Error saving question', error);
+    //   }
+    // );
   }
 }

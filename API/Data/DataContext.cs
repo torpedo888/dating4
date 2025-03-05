@@ -31,5 +31,12 @@ namespace API.Data
                 .IsRequired();
 
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.EnableSensitiveDataLogging(); // Enable sensitive data logging for detailed error info
+        }
     }
 }
