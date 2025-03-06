@@ -3,6 +3,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap } from 'rxjs';
 import { Option } from './_models/Option';
 import { Question } from './_models/Question';
+import { map } from 'rxjs/operators';
+
 
 // export interface QuestionResponse {
 //   question: Question;
@@ -33,12 +35,25 @@ export class QuestionService {
   getQuestions(): Observable<Question[]> {
     console.log('Calling API to fetch questions...');
   
+    // return this.http.get<Question[]>(this.apiGetUrl).pipe(
+    //   tap((data) => console.log('API call to fetch questions completed', data)),
+    //   catchError((error: HttpErrorResponse) => {
+    //     console.error('API call failed:', error);
+    //     throw error; // Rethrow the error
+    //   })
+    // );
+
     return this.http.get<Question[]>(this.apiGetUrl).pipe(
-      tap((data) => console.log('API call to fetch questions completed', data)),
-      catchError((error: HttpErrorResponse) => {
-        console.error('API call failed:', error);
-        throw error; // Rethrow the error
-      })
+      map((questions: Question[]) =>
+        questions.map(q => ({
+          ...q,
+          options: q.options.map(o => ({
+            ...o,
+            isCorrect: o.isCorrect
+          })),
+          categoryName: q.categoryName ?? "Unknown Category"
+        }))
+      )
     );
   }
 

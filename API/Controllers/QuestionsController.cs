@@ -101,6 +101,7 @@ public class QuestionsController(DataContext context) : ControllerBase
         {
             var questions = await _context.Questions
                 .Include(q => q.Options)
+                .Include( c=> c.Category)
                 .ToListAsync();
 
             // Convert to DTOs
@@ -111,8 +112,10 @@ public class QuestionsController(DataContext context) : ControllerBase
                 Options = q.Options.Select(o => new OptionDto
                 {
                     Id = o.Id,
-                    Text = o.Text
-                }).ToList()
+                    Text = o.Text,
+                    IsCorrect = o.IsCorrect == 1
+                }).ToList(),
+                CategoryName = q.Category!=null ? q.Category.Name : "Unknown"
             }).ToList();
 
             return Ok(questionDtos);

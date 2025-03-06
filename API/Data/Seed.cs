@@ -80,7 +80,13 @@ namespace API.Data
             await context.Quizzes.ExecuteDeleteAsync();
             await context.Categories.ExecuteDeleteAsync();
 
-            await context.SaveChangesAsync(); 
+            await context.SaveChangesAsync();
+
+            // Reset autoincrement values
+            await context.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence WHERE name='Options';");
+            await context.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence WHERE name='Questions';");
+            await context.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence WHERE name='Quizzes';");
+            await context.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence WHERE name='Categories';");
         }
 
         public static async Task SeedQuizDatabase(DataContext context)
